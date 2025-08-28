@@ -21,12 +21,15 @@ public class FactType
         }
         else
         {
-            // HashSet automatically prevents duplicates
             _facts.Add(args);
-            
-            // Return this FactType for method chaining
             return this;
         }
+    }
+
+    public LogicExpression Match(params object[] args)
+    {
+        ValidateArity(args.Length);
+        return new FactExpression(this, args);
     }
 
     private void ValidateArity(int arity)

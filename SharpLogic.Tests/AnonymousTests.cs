@@ -14,7 +14,7 @@ public class AnonymousTests
         var anonymous2 = Anonymous._;
         
         // Assert
-        anonymous1.ShouldBe(anonymous2); // Same value (structs are value types)
+        anonymous1.ShouldBe(anonymous2);
     }
     
     [Fact]
@@ -22,12 +22,12 @@ public class AnonymousTests
     {
         // Arrange
         var anon1 = Anonymous._;
-        var anon2 = new Anonymous(); // New instance
+        var anon2 = new Anonymous();
         
         // Assert  
-        anon1.ShouldBe(anon2);           // Equals method
-        (anon1 == anon2).ShouldBeTrue(); // Operator ==
-        (anon1 != anon2).ShouldBeFalse();// Operator !=
+        anon1.ShouldBe(anon2);
+        (anon1 == anon2).ShouldBeTrue();
+        (anon1 != anon2).ShouldBeFalse();
     }
     
     [Fact]
@@ -49,7 +49,7 @@ public class AnonymousTests
         var hash2 = anon2.GetHashCode();
         
         // Assert
-        hash1.ShouldBe(hash2); // All Anonymous instances should have same hash
+        hash1.ShouldBe(hash2);
     }
     
     [Fact]

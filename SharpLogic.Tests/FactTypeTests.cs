@@ -15,7 +15,7 @@ public class FactTypeTests
         
         // Assert
         parent.Name.ShouldBe("parent");
-        parent.Arity.ShouldBeNull(); // No arity set yet
+        parent.Arity.ShouldBeNull();
     }
     
     [Fact]
@@ -29,11 +29,10 @@ public class FactTypeTests
         
         // Assert
         parent.Arity.ShouldBe(2);
-        object resultObj = result;  // Convert to object first
+        object resultObj = result;
         resultObj.ShouldBeOfType<FactType>();
         
-        // Should return the same FactType instance for chaining
-        FactType resultFactType = result; // Convert dynamic to concrete type
+        FactType resultFactType = result;
         resultFactType.ShouldBeSameAs(parent);
     }
     
@@ -45,8 +44,8 @@ public class FactTypeTests
         
         // Act
         parent.Invoke("john", "mary");
-        parent.Invoke("john", "mary"); // Same fact - should be ignored
-        parent.Invoke("mary", "susan"); // Different fact
+        parent.Invoke("john", "mary");
+        parent.Invoke("mary", "susan");
         
         // Assert - Should have only 2 unique facts, not 3
         parent.Count(_, _).ShouldBe(2);
@@ -60,15 +59,15 @@ public class FactTypeTests
         // Arrange
         var parent = new FactType("parent");
         
-        // Act - Chain multiple Invoke calls
+        // Act
         var result = parent.Invoke("john", "mary")
                           .Invoke("mary", "susan")
                           .Invoke("bob", "alice");
         
         // Assert
-        FactType resultFactType = result; // Convert dynamic to concrete type
-        resultFactType.ShouldBeSameAs(parent); // Should return same instance
-        parent.Count(_, _).ShouldBe(3); // All facts should be added
+        FactType resultFactType = result;
+        resultFactType.ShouldBeSameAs(parent);
+        parent.Count(_, _).ShouldBe(3);
     }
     
     [Fact]
@@ -80,7 +79,7 @@ public class FactTypeTests
         
         // Act & Assert
         var exception = Should.Throw<ArgumentException>(() => 
-            parent.Invoke("john", "mary", "biological")); // 3 arguments
+            parent.Invoke("john", "mary", "biological"));
         
         exception.Message.ShouldContain("expects 2 arguments, but got 3");
         exception.Message.ShouldContain("parent");
@@ -99,7 +98,7 @@ public class FactTypeTests
         var queryResult = parent.Invoke(_, "mary");
         
         // Assert
-        object queryObj = queryResult;  // Convert to object first
+        object queryObj = queryResult;
         queryObj.ShouldBeOfType<FactType.FactQuery>();
         
         FactType.FactQuery query = queryResult;

@@ -6,6 +6,14 @@ using static SharpLogic.Core.FactType;
 public static class Extensions
 {
     public static Variable<T> Var<T>(string? name = null) => new(name);
+    
+    private static int _varCounter = 0;
+    public static Variable<object> Var(string? name = null) 
+    {
+        return name != null 
+            ? new Variable<object>(name) 
+            : new Variable<object>($"_G{_varCounter++}");
+    }
 
     public static bool Exists(this FactType factType, params object[] args)
     {
@@ -44,6 +52,13 @@ public static class Facts
 public static class Globals
 {
     public static readonly Anonymous _ = Anonymous._;
+    
+    public static RuleType Rule(string name, Delegate ruleFunc)
+    {
+        Rules.Rule(name, ruleFunc);
+        var ruleDefinition = Rules.GetRule(name)!;
+        return new RuleType(ruleDefinition);
+    }
 }
 
 public static class QueryExtensions
@@ -62,5 +77,41 @@ public static class QueryExtensions
     public static bool Any(this FactType factType, params object[] pattern)
     {
         return factType.QueryFacts(pattern).Any();
+    }
+
+    public static RuleType.RuleQuery Query(this RuleType ruleType, params object[] args)
+    {
+        return (RuleType.RuleQuery)ruleType.Invoke(args);
+    }
+
+    public static bool Exists(this RuleType ruleType, params object[] args)
+    {
+        bool hasVariables = args.Any(arg => arg is Anonymous || IsVariableType(arg));
+        
+        if (hasVariables)
+        {
+            return ruleType.Query(args).Any();
+        }
+        else
+        {
+            return (bool)ruleType.Invoke(args);
+        }
+    }
+
+    public static bool Any(this RuleType ruleType, params object[] pattern)
+    {
+        return ruleType.Query(pattern).Any();
+    }
+
+    public static int Count(this RuleType ruleType, params object[] pattern)
+    {
+        return ruleType.Query(pattern).Count();
+    }
+
+    private static bool IsVariableType(object obj)
+    {
+        if (obj is null) return false;
+        var type = obj.GetType();
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Variable<>);
     }
 }
